@@ -60,9 +60,13 @@ app.post("/api/heroes", (req, res) => {
         return;
     }
 
+    // capitalize string
+    let name = req.body.name;
+    name = name.toLowerCase().replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+
     const hero = {
         id: heroes.length + 1,
-        name: req.body.name,
+        name: name,
         year: req.body.year
     }
     if (hero != null) heroes.push(hero);
