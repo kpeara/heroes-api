@@ -1,5 +1,7 @@
 const express = require("express");
+
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 let heroes = [
@@ -46,12 +48,12 @@ app.get("/api/heroes/:id", (req, res) => {
 // === POST REQUESTS ===
 app.post("/api/heroes", (req, res) => {
     const hero = {
-        id: ++heroes.length,
+        id: heroes.length + 1,
         name: req.body.name,
         year: req.body.year
     }
-    heroes.push(hero);
-    app.send(heroes);
+    if (hero != null) heroes.push(hero);
+    res.send(hero);
 })
 
 app.listen(port, () => console.log(`listening on port ${port}`));
