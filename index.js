@@ -11,6 +11,7 @@ let heroes = [
     { id: 6, name: "Ant-Man", year: 1962 }
 ]
 
+// === GET REQUESTS ===
 app.get("/", (req, res) => {
     res.send("<h1>Heroes's API</h1>")
 });
@@ -18,6 +19,8 @@ app.get("/", (req, res) => {
 app.get("/api/heroes", (req, res) => {
 
     modifiedHeroes = [...heroes];
+
+    // queries
     const reverse = req.query.reverse;
     const sortProp = req.query.sortBy;
 
@@ -39,5 +42,16 @@ app.get("/api/heroes/:id", (req, res) => {
     if (!hero) res.status(404).send("Invalid Request: Hero Does Not Exist");
     else res.send(hero);
 });
+
+// === POST REQUESTS ===
+app.post("/api/heroes", (req, res) => {
+    const hero = {
+        id: ++heroes.length,
+        name: req.body.name,
+        year: req.body.year
+    }
+    heroes.push(hero);
+    app.send(heroes);
+})
 
 app.listen(port, () => console.log(`listening on port ${port}`));
