@@ -24,9 +24,15 @@ app.get("/api/heroes", (req, res) => {
     modifiedHeroes = [...heroes];
 
     // queries
-    const reverse = req.query.reverse;
-    const sortProp = req.query.sortBy;
+    const reverse = req.query.reverse; // reverse array
+    const sortProp = req.query.sortBy; // sort array based on property
+    const reindex = req.query.reindex; // reindex array (changes stay)
 
+    if (reindex === "true") {
+        for (i = 0; i < modifiedHeroes.length; i++) {
+            modifiedHeroes[i].id = i + 1;
+        }
+    }
     if (sortProp === "name" || sortProp === "year") {
         modifiedHeroes.sort((a, b) => {
             if (a[sortProp] > b[sortProp]) return 1;
@@ -80,9 +86,10 @@ app.post("/api/heroes", (req, res) => {
 
     // capitalize string
     let name = capitalize(req.body.name);
+    let id = heroes.length === 0 ? 1 : heroes[heroes.length - 1].id + 1; // if array is empty reset id to 1
 
     const hero = {
-        id: heroes.length + 1,
+        id: id,
         name: name,
         year: req.body.year
     }
