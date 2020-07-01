@@ -12,7 +12,7 @@ let heroes = [
     { id: 4, name: "Spider-Man", year: 1962 },
     { id: 5, name: "Blue Beetle", year: 1939 },
     { id: 6, name: "Ant-Man", year: 1962 }
-]
+];
 
 // === GET REQUESTS ===
 app.get("/", (req, res) => {
@@ -46,23 +46,36 @@ app.get("/api/heroes/:id", (req, res) => {
     else res.send(hero);
 });
 
+// === PUT REQUESTS ===
+app.put("/api/heroes/:id", (req, res) => {
+    // get hero
+    const hero = heroes.find(h => h.id === parseInt(req.params.id));
+    if (!hero) res.status(404).send("Invalid Request: Hero Does Not Exist");
+
+    // validate
+    const { error } = validate(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
+    // update
+    hero.name = capitalize(req.body.name);
+    hero.year = req.body.year;
+    res.send(hero);
+});
+
 // === POST REQUESTS ===
 app.post("/api/heroes", (req, res) => {
 
-    const schema = {
-        name: Joi.string().min(3).max(30).required(),
-        year: Joi.number().max(new Date().getUTCFullYear()).required()
-    }
-
-    const result = Joi.validate(req.body, schema);
-    if (result.error) {
-        res.status(400).send(result.error.details[0].message);
+    const { error } = validate(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
         return;
     }
 
     // capitalize string
-    let name = req.body.name;
-    name = name.toLowerCase().replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+    let name = capitalize(req.body.name);
 
     const hero = {
         id: heroes.length + 1,
@@ -71,6 +84,20 @@ app.post("/api/heroes", (req, res) => {
     }
     if (hero != null) heroes.push(hero);
     res.send(hero);
-})
+});
 
 app.listen(port, () => console.log(`listening on port ${port}`));
+
+// validation request body with Joi
+function validate(hero) {
+    const schema = {
+        name: Joi.string().min(3).max(30).required(),
+        year: Joi.number().max(new Date().getUTCFullYear()).required()
+    }
+    return Joi.validate(hero, schema);
+}
+
+// capitalize name string properly
+function capitalize(name) {
+    return name.toLowerCase().replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+}
