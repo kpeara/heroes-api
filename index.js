@@ -42,37 +42,41 @@ app.get("/api/heroes", (req, res) => {
 
 app.get("/api/heroes/:id", (req, res) => {
     const hero = heroes.find(h => h.id === parseInt(req.params.id));
-    if (!hero) res.status(404).send("Invalid Request: Hero Does Not Exist");
-    else res.send(hero);
+    if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
+    res.send(hero);
 });
 
 // === PUT REQUESTS ===
 app.put("/api/heroes/:id", (req, res) => {
-    // get hero
+    // find hero
     const hero = heroes.find(h => h.id === parseInt(req.params.id));
-    if (!hero) res.status(404).send("Invalid Request: Hero Does Not Exist");
+    if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
 
     // validate
     const { error } = validate(req.body);
-    if (error) {
-        res.status(400).send(error.details[0].message);
-        return;
-    }
+    if (error) return res.status(400).send(error.details[0].message);
 
-    // update
-    hero.name = capitalize(req.body.name);
     hero.year = req.body.year;
+    res.send(hero);
+});
+
+// === DELETE REQUESTS ===
+app.delete("/api/heroes/:id", (req, res) => {
+    // find hero
+    const hero = heroes.find(h => h.id === parseInt(req.params.id));
+    if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
+
+    // delete
+    index = heroes.indexOf(hero);
+    heroes.splice(index, 1);
     res.send(hero);
 });
 
 // === POST REQUESTS ===
 app.post("/api/heroes", (req, res) => {
-
+    // validate
     const { error } = validate(req.body);
-    if (error) {
-        res.status(400).send(error.details[0].message);
-        return;
-    }
+    if (error) return res.status(400).send(error.details[0].message);
 
     // capitalize string
     let name = capitalize(req.body.name);
