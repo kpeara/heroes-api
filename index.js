@@ -1,4 +1,5 @@
 const express = require("express");
+const Joi = require("joi"); // capitals for Class
 
 const app = express();
 app.use(express.json());
@@ -47,6 +48,18 @@ app.get("/api/heroes/:id", (req, res) => {
 
 // === POST REQUESTS ===
 app.post("/api/heroes", (req, res) => {
+
+    const schema = {
+        name: Joi.string().min(3).max(30).required(),
+        year: Joi.number().max(new Date().getUTCFullYear()).required()
+    }
+
+    const result = Joi.validate(req.body, schema);
+    if (result.error) {
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+
     const hero = {
         id: heroes.length + 1,
         name: req.body.name,
