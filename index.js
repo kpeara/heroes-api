@@ -1,8 +1,10 @@
 const express = require("express");
 const Joi = require("joi"); // capitals for Class
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+app.use(cors({ credentials: true, origin: true }));
 const port = 3000;
 
 let heroes = [
@@ -27,6 +29,8 @@ app.get("/api/heroes", (req, res) => {
     const reverse = req.query.reverse; // reverse array
     const sortProp = req.query.sortBy; // sort array based on property
     const reindex = req.query.reindex; // reindex array (changes stay)
+
+    if (reverse) console.log("REVERSAL");
 
     if (reindex === "true") {
         for (i = 0; i < modifiedHeroes.length; i++) {
