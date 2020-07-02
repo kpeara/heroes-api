@@ -8,7 +8,7 @@ app.use(cors({ credentials: true, origin: true }));
 const port = 3000;
 
 let heroes = [
-    { id: 1, name: "Batman", year: 1939, info: "Batman is a fictional superhero appearing in American comic books published by DC Comics. The character was created by artist Bob Kane and writer Bill Finger, and first appeared in Detective Comics #27 in 1939. Originally named the 'Bat-Man,' the character is also referred to by such epithets as the Caped Crusader, the Dark Knight, and the World's Greatest Detective. (wikipedia)" },
+    { id: 1, name: "Batman", year: 1939, info: "Batman is a fictional superhero appearing in American comic books published by DC Comics. The character was created by artist Bob Kane and writer Bill Finger, and first appeared in Detective Comics #27 in 1939. Originally named the 'Bat-Man,' the character is also referred to by such epithets as the Caped Crusader, the Dark Knight, and the World's Greatest Detective." },
     { id: 2, name: "Daredevil", year: 1964, info: "Daredevil is a fictional superhero appearing in American comic books published by Marvel Comics. Daredevil was created by writer-editor Stan Lee and artist Bill Everett, with an unspecified amount of input from Jack Kirby. The character first appeared in Daredevil #1 (April 1964). Writer/artist Frank Miller's influential tenure on the title in the early 1980s cemented the character as a popular and influential part of the Marvel Universe. Daredevil is commonly known by such epithets as the 'Man Without Fear' and the 'Devil of Hell's Kitchen'." },
     { id: 3, name: "Iron Man", year: 1963, info: "Iron Man is a fictional superhero appearing in American comic books published by Marvel Comics. The character was co-created by writer and editor Stan Lee, developed by scripter Larry Lieber, and designed by artists Don Heck and Jack Kirby. The character made his first appearance in Tales of Suspense #39 (cover dated March 1963), and received his own title in Iron Man #1 (May 1968)." },
     { id: 4, name: "Spider-Man", year: 1962, info: "Spider-Man is a fictional superhero created by writer-editor Stan Lee and writer-artist Steve Ditko. He first appeared in the anthology comic book Amazing Fantasy #15 (August 1962) in the Silver Age of Comic Books. He appears in American comic books published by Marvel Comics, as well as in a number of movies, television shows, and video game adaptations set in the Marvel Universe." },
@@ -107,7 +107,7 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 function validate(hero) {
     const schema = {
         name: Joi.string().min(3).max(30).required(),
-        year: Joi.number().max(new Date().getUTCFullYear()).required()
+        year: Joi.number().max(new Date().getUTCFullYear()) // optional
     }
     return Joi.validate(hero, schema);
 }
