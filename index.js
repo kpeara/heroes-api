@@ -8,17 +8,17 @@ app.use(cors({ credentials: true, origin: true }));
 const port = 3000;
 
 let heroes = [
-    { id: 1, name: "Batman", year: 1939, info: "Batman is a fictional superhero appearing in American comic books published by DC Comics. The character was created by artist Bob Kane and writer Bill Finger, and first appeared in Detective Comics #27 in 1939. Originally named the 'Bat-Man,' the character is also referred to by such epithets as the Caped Crusader, the Dark Knight, and the World's Greatest Detective." },
-    { id: 2, name: "Daredevil", year: 1964, info: "Daredevil is a fictional superhero appearing in American comic books published by Marvel Comics. Daredevil was created by writer-editor Stan Lee and artist Bill Everett, with an unspecified amount of input from Jack Kirby. The character first appeared in Daredevil #1 (April 1964). Writer/artist Frank Miller's influential tenure on the title in the early 1980s cemented the character as a popular and influential part of the Marvel Universe. Daredevil is commonly known by such epithets as the 'Man Without Fear' and the 'Devil of Hell's Kitchen'." },
-    { id: 3, name: "Iron Man", year: 1963, info: "Iron Man is a fictional superhero appearing in American comic books published by Marvel Comics. The character was co-created by writer and editor Stan Lee, developed by scripter Larry Lieber, and designed by artists Don Heck and Jack Kirby. The character made his first appearance in Tales of Suspense #39 (cover dated March 1963), and received his own title in Iron Man #1 (May 1968)." },
-    { id: 4, name: "Spider-Man", year: 1962, info: "Spider-Man is a fictional superhero created by writer-editor Stan Lee and writer-artist Steve Ditko. He first appeared in the anthology comic book Amazing Fantasy #15 (August 1962) in the Silver Age of Comic Books. He appears in American comic books published by Marvel Comics, as well as in a number of movies, television shows, and video game adaptations set in the Marvel Universe." },
-    { id: 5, name: "Blue Beetle", year: 1939, info: "Blue Beetle is the name of three fictional superheroes who appear in a number of American comic books published by a variety of companies since 1939. The most recent of the companies to own rights to the Blue Beetle is DC Comics who bought the rights to the character in 1983, using the name for three distinct characters over the years." },
-    { id: 6, name: "Ant-Man", year: 1962, info: "Ant-Man is the name of several superheroes appearing in books published by Marvel Comics. Created by Stan Lee, Larry Lieber and Jack Kirby, Ant-Man's first appearance was in Tales to Astonish #35 (September 1962). The persona was originally the brilliant scientist Hank Pym's superhero alias after inventing a substance that can change size, but reformed thieves Scott Lang and Eric O'Grady also took on the mantle after the original changed his superhero identity to various other aliases, such as Giant-Man, Goliath, and Yellowjacket." }
+    { id: 1, name: "Batman", year: 1939, info: "Batman is a fictional superhero appearing in American comic books published by DC Comics." },
+    { id: 2, name: "Daredevil", year: 1964, info: "Daredevil is a fictional superhero appearing in American comic books published by Marvel Comics.." },
+    { id: 3, name: "Iron Man", year: 1963, info: "Iron Man is a fictional superhero appearing in American comic books published by Marvel Comics." },
+    { id: 4, name: "Spider-Man", year: 1962, info: "Spider-Man is a fictional superhero created by writer-editor Stan Lee and writer-artist Steve Ditko." },
+    { id: 5, name: "Blue Beetle", year: 1939, info: "Blue Beetle is the name of three fictional superheroes who appear in a number of American comic books published by a variety of companies since 1939." },
+    { id: 6, name: "Ant-Man", year: 1962, info: "Ant-Man is the name of several superheroes appearing in books published by Marvel Comics." }
 ];
 
 // === GET REQUESTS ===
 app.get("/", (req, res) => {
-    res.send("<h1>Heroes's API</h1>")
+    res.send("<h1>Heroes's API</h1><p>USE: https://localhost:3000/api/heroes<p>")
 });
 
 app.get("/api/heroes", (req, res) => {
@@ -66,7 +66,9 @@ app.put("/api/heroes/:id", (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
+    hero.name = req.body.name;
     hero.year = req.body.year;
+    hero.info = req.body.info;
     res.send(hero);
 });
 
@@ -95,7 +97,8 @@ app.post("/api/heroes", (req, res) => {
     const hero = {
         id: id,
         name: name,
-        year: req.body.year
+        year: req.body.year,
+        info: req.body.info
     }
     if (hero != null) heroes.push(hero);
     res.send(hero);
@@ -107,7 +110,8 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 function validate(hero) {
     const schema = {
         name: Joi.string().min(3).max(30).required(),
-        year: Joi.number().max(new Date().getUTCFullYear()) // optional
+        year: Joi.number().max(new Date().getUTCFullYear()), // optional
+        info: Joi.string().min(5).max(200).required(),
     }
     return Joi.validate(hero, schema);
 }
