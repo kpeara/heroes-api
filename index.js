@@ -118,7 +118,7 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 function validate(hero) {
     const schema = yup.object().shape({
         name: yup.string().min(3).max(30).required(),
-        year: yup.number().max(new Date().getUTCFullYear()), // optional
+        year: yup.number().max(new Date().getUTCFullYear()).positive(), // optional
         info: yup.string().min(5).max(200).required(),
     });
     return schema.validate(hero);
