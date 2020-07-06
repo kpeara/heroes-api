@@ -1,6 +1,7 @@
 const express = require("express");
-const Joi = require("joi"); // capitals for Class
+const yup = require("yup");
 const cors = require("cors");
+const db = require("./dbconnect");
 
 const app = express();
 app.use(express.json());
@@ -58,18 +59,22 @@ app.get("/api/heroes/:id", (req, res) => {
 
 // === PUT REQUESTS ===
 app.put("/api/heroes/:id", (req, res) => {
-    // find hero
-    const hero = heroes.find(h => h.id === parseInt(req.params.id));
-    if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
+    validate(req.body)
+        .then(() => {
+            // find hero
+            const hero = heroes.find(h => h.id === parseInt(req.params.id));
+            if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
 
-    // validate
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    hero.name = req.body.name;
-    hero.year = req.body.year;
-    hero.info = req.body.info;
-    res.send(hero);
+            hero.name = req.body.name;
+            hero.year = req.body.year;
+            hero.info = req.body.info;
+            res.send(hero);
+        })
+        .catch(err => {
+            if (err) {
+                res.status(400).send(err.errors[0]);
+            }
+        });
 });
 
 // === DELETE REQUESTS ===
@@ -86,34 +91,37 @@ app.delete("/api/heroes/:id", (req, res) => {
 
 // === POST REQUESTS ===
 app.post("/api/heroes", (req, res) => {
-    // validate
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    // capitalize string
-    let name = capitalize(req.body.name);
-    let id = heroes.length === 0 ? 1 : heroes[heroes.length - 1].id + 1; // if array is empty reset id to 1
-
-    const hero = {
-        id: id,
-        name: name,
-        year: req.body.year,
-        info: req.body.info
-    }
-    if (hero != null) heroes.push(hero);
-    res.send(hero);
+    validate(req.body)
+        .then(() => {
+            // capitalize string
+            let name = capitalize(req.body.name);
+            let id = heroes.length === 0 ? 1 : heroes[heroes.length - 1].id + 1; // if array is empty reset id to 1
+            const hero = {
+                id: id,
+                name: name,
+                year: req.body.year,
+                info: req.body.info
+            }
+            if (hero != null) heroes.push(hero);
+            res.send(hero);
+        })
+        .catch(err => {
+            if (err) {
+                res.status(400).send(err.errors[0]);
+            }
+        });
 });
 
 app.listen(port, () => console.log(`listening on port ${port}`));
 
-// validation request body with Joi
+// validation request body with yup
 function validate(hero) {
-    const schema = {
-        name: Joi.string().min(3).max(30).required(),
-        year: Joi.number().max(new Date().getUTCFullYear()), // optional
-        info: Joi.string().min(5).max(200).required(),
-    }
-    return Joi.validate(hero, schema);
+    const schema = yup.object().shape({
+        name: yup.string().min(3).max(30).required(),
+        year: yup.number().max(new Date().getUTCFullYear()), // optional
+        info: yup.string().min(5).max(200).required(),
+    });
+    return schema.validate(hero);
 }
 
 // capitalize name string properly

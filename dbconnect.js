@@ -5,7 +5,9 @@ let db = new sqlite.Database("./db/heroes.db", (err) => {
     console.log("Success: Connected to Heroes Database.");
 })
 
-db.close((err) => {
-    if (err) return console.error(err.message);
-    console.log("Success: Closed Connection to In-Memory Database.");
-})
+module.exports = db;
+
+// db.close((err) => {
+//     if (err) return console.error(err.message);
+//     console.log("Success: Closed Connection to In-Memory Database.");
+// })
