@@ -7,6 +7,8 @@ const app = express();
 app.use(express.json());
 app.use(cors({ credentials: true, origin: true }));
 const port = 3000;
+const user_id = 1;
+// NOTE: For testing purposes, the user will have a user id of 1
 
 let heroes = [
     { id: 1, name: "Batman", year: 1939, info: "Batman is a fictional superhero appearing in American comic books published by DC Comics." },
@@ -25,11 +27,10 @@ app.get("/", (req, res) => {
 
 // Get heroes array
 app.get("/api/heroes", (req, res) => {
-
-    db.all("SELECT * FROM hero;", (err, rows) => {
+    db.all(`SELECT id, name, year, info FROM hero WHERE user_id = ${user_id};`, (err, rows) => {
         if (err) console.log(err);
         else {
-
+            // if there is no error, copy the data to a temporary array for modification (a feature I might deprecate)
             modifiedHeroes = [...rows];
 
             // queries
@@ -61,9 +62,14 @@ app.get("/api/heroes", (req, res) => {
 
 // Get a specific hero based on given id
 app.get("/api/heroes/:id", (req, res) => {
-    const hero = heroes.find(h => h.id === parseInt(req.params.id));
-    if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
-    res.send(hero);
+    db.get(`SELECT * FROM hero WHERE user_id = ${user_id} AND id = ${req.params.id};`, (err, row) => {
+        if (err) return err;
+        else {
+            const hero = row
+            if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
+            res.send(hero);
+        }
+    });
 });
 
 // === PUT REQUESTS ===
