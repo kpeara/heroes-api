@@ -18,10 +18,12 @@ let heroes = [
 ];
 
 // === GET REQUESTS ===
+// Home Page
 app.get("/", (req, res) => {
     res.send("<h1>Heroes's API</h1><p>USE: https://localhost:3000/api/heroes<p>")
 });
 
+// Get heroes array
 app.get("/api/heroes", (req, res) => {
 
     modifiedHeroes = [...heroes];
@@ -51,6 +53,7 @@ app.get("/api/heroes", (req, res) => {
     res.send(modifiedHeroes);
 });
 
+// Get a specific hero based on given id
 app.get("/api/heroes/:id", (req, res) => {
     const hero = heroes.find(h => h.id === parseInt(req.params.id));
     if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
@@ -58,6 +61,7 @@ app.get("/api/heroes/:id", (req, res) => {
 });
 
 // === PUT REQUESTS ===
+// update hero based on given id
 app.put("/api/heroes/:id", (req, res) => {
     validate(req.body)
         .then(() => {
@@ -78,6 +82,7 @@ app.put("/api/heroes/:id", (req, res) => {
 });
 
 // === DELETE REQUESTS ===
+// delete hero based on given id
 app.delete("/api/heroes/:id", (req, res) => {
     // find hero
     const hero = heroes.find(h => h.id === parseInt(req.params.id));
@@ -90,6 +95,7 @@ app.delete("/api/heroes/:id", (req, res) => {
 });
 
 // === POST REQUESTS ===
+// add a hero to heroes array
 app.post("/api/heroes", (req, res) => {
     validate(req.body)
         .then(() => {
@@ -121,7 +127,7 @@ function validate(hero) {
         year: yup.number().max(new Date().getUTCFullYear()).positive(), // optional
         info: yup.string().min(5).max(200).required(),
     });
-    return schema.validate(hero);
+    return schema.validate(hero); // returns a Promise
 }
 
 // capitalize name string properly
