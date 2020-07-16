@@ -26,31 +26,37 @@ app.get("/", (req, res) => {
 // Get heroes array
 app.get("/api/heroes", (req, res) => {
 
-    modifiedHeroes = [...heroes];
+    db.all("SELECT * FROM hero;", (err, rows) => {
+        if (err) console.log(err);
+        else {
 
-    // queries
-    const reverse = req.query.reverse; // reverse array
-    const sortProp = req.query.sortBy; // sort array based on property
-    const reindex = req.query.reindex; // reindex array (changes stay)
+            modifiedHeroes = [...rows];
 
-    if (reverse) console.log("REVERSAL");
+            // queries
+            const reverse = req.query.reverse; // reverse array
+            const sortProp = req.query.sortBy; // sort array based on property
+            const reindex = req.query.reindex; // reindex array (changes stay)
 
-    if (reindex === "true") {
-        for (i = 0; i < modifiedHeroes.length; i++) {
-            modifiedHeroes[i].id = i + 1;
+            if (reverse) console.log("REVERSAL");
+
+            if (reindex === "true") {
+                for (i = 0; i < modifiedHeroes.length; i++) {
+                    modifiedHeroes[i].id = i + 1;
+                }
+            }
+            if (sortProp === "name" || sortProp === "year") {
+                modifiedHeroes.sort((a, b) => {
+                    if (a[sortProp] > b[sortProp]) return 1;
+                    if (a[sortProp] < b[sortProp]) return -1;
+                    return 0;
+                })
+            }
+            if (reverse === "true") {
+                modifiedHeroes.reverse();
+            }
+            res.send(modifiedHeroes);
         }
-    }
-    if (sortProp === "name" || sortProp === "year") {
-        modifiedHeroes.sort((a, b) => {
-            if (a[sortProp] > b[sortProp]) return 1;
-            if (a[sortProp] < b[sortProp]) return -1;
-            return 0;
-        })
-    }
-    if (reverse === "true") {
-        modifiedHeroes.reverse();
-    }
-    res.send(modifiedHeroes);
+    });
 });
 
 // Get a specific hero based on given id
