@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
     res.send("<h1>Heroes's API</h1><p>USE: https://localhost:3000/api/heroes<p>")
 });
 
-// Get heroes array
+// Get heroes from database
 app.get("/api/heroes", (req, res) => {
     db.all(`SELECT id, name, year, info FROM hero WHERE user_id = ${user_id};`, (err, rows) => {
         if (err) console.log(err);
@@ -109,13 +109,6 @@ app.delete("/api/heroes/:id", (req, res) => {
             res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
         }
     })
-    // const hero = heroes.find(h => h.id === parseInt(req.params.id));
-    // if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
-
-    // // delete
-    // index = heroes.indexOf(hero);
-    // heroes.splice(index, 1);
-    // res.send(hero);
 });
 
 // === POST REQUESTS ===
@@ -125,15 +118,22 @@ app.post("/api/heroes", (req, res) => {
         .then(() => {
             // capitalize string
             let name = capitalize(req.body.name);
-            let id = heroes.length === 0 ? 1 : heroes[heroes.length - 1].id + 1; // if array is empty reset id to 1
-            const hero = {
-                id: id,
-                name: name,
-                year: req.body.year,
-                info: req.body.info
-            }
-            if (hero != null) heroes.push(hero);
-            res.send(hero);
+            // let id = heroes.length === 0 ? 1 : heroes[heroes.length - 1].id + 1; // if array is empty reset id to 1
+            const data = [name, req.body.year, req.body.info]
+            const sql = `
+                INSERT INTO hero (id, name, year, info, user_id)
+                    VALUES ((SELECT IFNULL(max(id), 0) + 1 FROM hero WHERE user_id = ${user_id}),
+                    ?,
+                    ?,
+                    ?,
+                    ${user_id});
+            `;
+            db.run(sql, data, function (err) {
+                if (err) console.log(err.message);
+                else {
+                    res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
+                }
+            });
         })
         .catch(err => {
             if (err) {
