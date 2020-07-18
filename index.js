@@ -77,14 +77,26 @@ app.get("/api/heroes/:id", (req, res) => {
 app.put("/api/heroes/:id", (req, res) => {
     validate(req.body)
         .then(() => {
-            // find hero
-            const hero = heroes.find(h => h.id === parseInt(req.params.id));
-            if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
+            // update hero from database
+            const data = [req.body.name, req.body.year, req.body.info];
+            const sql = `UPDATE hero
+                            SET name = ?,
+                                year = ?,
+                                info = ?
+                            WHERE user_id = ${user_id} AND id = ${req.params.id}`;
+            db.run(sql, data, function (err) {
+                if (err) console.log(err.message);
+                else {
+                    res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
+                }
+            })
+            // const hero = heroes.find(h => h.id === parseInt(req.params.id));
+            // if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
 
-            hero.name = req.body.name;
-            hero.year = req.body.year;
-            hero.info = req.body.info;
-            res.send(hero);
+            // hero.name = req.body.name;
+            // hero.year = req.body.year;
+            // hero.info = req.body.info;
+            // res.send(hero);
         })
         .catch(err => {
             if (err) {
