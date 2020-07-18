@@ -90,13 +90,6 @@ app.put("/api/heroes/:id", (req, res) => {
                     res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
                 }
             })
-            // const hero = heroes.find(h => h.id === parseInt(req.params.id));
-            // if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
-
-            // hero.name = req.body.name;
-            // hero.year = req.body.year;
-            // hero.info = req.body.info;
-            // res.send(hero);
         })
         .catch(err => {
             if (err) {
@@ -108,14 +101,21 @@ app.put("/api/heroes/:id", (req, res) => {
 // === DELETE REQUESTS ===
 // delete hero based on given id
 app.delete("/api/heroes/:id", (req, res) => {
-    // find hero
-    const hero = heroes.find(h => h.id === parseInt(req.params.id));
-    if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
+    // // find hero
+    const sql = `DELETE FROM hero WHERE user_id = ${user_id} AND id = ${req.params.id}`;
+    db.run(sql, function (err) {
+        if (err) console.log(err.message);
+        else {
+            res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
+        }
+    })
+    // const hero = heroes.find(h => h.id === parseInt(req.params.id));
+    // if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
 
-    // delete
-    index = heroes.indexOf(hero);
-    heroes.splice(index, 1);
-    res.send(hero);
+    // // delete
+    // index = heroes.indexOf(hero);
+    // heroes.splice(index, 1);
+    // res.send(hero);
 });
 
 // === POST REQUESTS ===
