@@ -119,6 +119,11 @@ app.post("/api/heroes", (req, res) => {
             // capitalize string
             let name = capitalize(req.body.name);
             // let id = heroes.length === 0 ? 1 : heroes[heroes.length - 1].id + 1; // if array is empty reset id to 1
+
+            const sqlNewId = `
+
+            `;
+
             const data = [name, req.body.year, req.body.info]
             const sql = `
                 INSERT INTO hero (id, name, year, info, user_id)
@@ -131,9 +136,18 @@ app.post("/api/heroes", (req, res) => {
             db.run(sql, data, function (err) {
                 if (err) console.log(err.message);
                 else {
-                    res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
                 }
             });
+
+            // return result back to be added into heroes array
+            // const hero = {
+            //     id: id,
+            //     name: name,
+            //     year: req.body.year,
+            //     info: req.body.info
+            // }
+            // if (hero != null) heroes.push(hero);
+            // res.send(hero);
         })
         .catch(err => {
             if (err) {
