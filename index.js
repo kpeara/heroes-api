@@ -10,15 +10,6 @@ const port = 3000;
 const user_id = 1;
 // NOTE: For testing purposes, the user will have a user id of 1
 
-let heroes = [
-    { id: 1, name: "Batman", year: 1939, info: "Batman is a fictional superhero appearing in American comic books published by DC Comics." },
-    { id: 2, name: "Daredevil", year: 1964, info: "Daredevil is a fictional superhero appearing in American comic books published by Marvel Comics.." },
-    { id: 3, name: "Iron Man", year: 1963, info: "Iron Man is a fictional superhero appearing in American comic books published by Marvel Comics." },
-    { id: 4, name: "Spider-Man", year: 1962, info: "Spider-Man is a fictional superhero created by writer-editor Stan Lee and writer-artist Steve Ditko." },
-    { id: 5, name: "Blue Beetle", year: 1939, info: "Blue Beetle is the name of three fictional superheroes who appear in a number of American comic books published by a variety of companies since 1939." },
-    { id: 6, name: "Ant-Man", year: 1962, info: "Ant-Man is the name of several superheroes appearing in books published by Marvel Comics." }
-];
-
 // === GET REQUESTS ===
 // Home Page
 app.get("/", (req, res) => {
@@ -27,7 +18,8 @@ app.get("/", (req, res) => {
 
 // Get heroes from database
 app.get("/api/heroes", (req, res) => {
-    db.all(`SELECT id, name, year, info FROM hero WHERE user_id = ${user_id};`, (err, rows) => {
+    const sql = `SELECT id, name, year, info FROM hero WHERE user_id = ${user_id};`;
+    db.all(sql, (err, rows) => {
         if (err) console.log(err);
         else {
             // if there is no error, copy the data to a temporary array for modification (a feature I might deprecate)
@@ -62,7 +54,8 @@ app.get("/api/heroes", (req, res) => {
 
 // Get a specific hero based on given id
 app.get("/api/heroes/:id", (req, res) => {
-    db.get(`SELECT * FROM hero WHERE user_id = ${user_id} AND id = ${req.params.id};`, (err, row) => {
+    const sql = `SELECT * FROM hero WHERE user_id = ${user_id} AND id = ${req.params.id};`;
+    db.get(sql, (err, row) => {
         if (err) return err;
         else {
             const hero = row
