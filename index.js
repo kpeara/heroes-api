@@ -25,18 +25,10 @@ app.get("/api/heroes", (req, res) => {
             // if there is no error, copy the data to a temporary array for modification (a feature I might deprecate)
             modifiedHeroes = [...rows];
 
-            // queries
+            // queries (for testing)
             const reverse = req.query.reverse; // reverse array
             const sortProp = req.query.sortBy; // sort array based on property
-            const reindex = req.query.reindex; // reindex array (changes stay)
 
-            if (reverse) console.log("REVERSAL");
-
-            if (reindex === "true") {
-                for (i = 0; i < modifiedHeroes.length; i++) {
-                    modifiedHeroes[i].id = i + 1;
-                }
-            }
             if (sortProp === "name" || sortProp === "year") {
                 modifiedHeroes.sort((a, b) => {
                     if (a[sortProp] > b[sortProp]) return 1;
