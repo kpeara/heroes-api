@@ -1,6 +1,7 @@
 const express = require("express");
 const yup = require("yup");
 const cors = require("cors");
+const path = require("path");
 const db = require("./dbconnect");
 
 const app = express();
@@ -14,7 +15,8 @@ const user_id = 1;
 // === GET REQUESTS ===
 // Home Page
 app.get("/", (req, res) => {
-    res.send("<h1>Heroes's API</h1><p>USE: https://localhost:3000/api/heroes<p>")
+    // res.send("<h1>Heroes's API</h1><p>USE: http://localhost:3000/api/heroes<p>")
+    res.sendFile(path.join(__dirname + "/index.html"));
 });
 
 // Get heroes from database
