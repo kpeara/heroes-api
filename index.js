@@ -118,36 +118,38 @@ app.post("/api/heroes", (req, res) => {
         .then(() => {
             // capitalize string
             let name = capitalize(req.body.name);
-            // let id = heroes.length === 0 ? 1 : heroes[heroes.length - 1].id + 1; // if array is empty reset id to 1
-
-            const sqlNewId = `
-
-            `;
-
-            const data = [name, req.body.year, req.body.info]
-            const sql = `
-                INSERT INTO hero (id, name, year, info, user_id)
-                    VALUES ((SELECT IFNULL(max(id), 0) + 1 FROM hero WHERE user_id = ${user_id}),
-                    ?,
-                    ?,
-                    ?,
-                    ${user_id});
-            `;
-            db.run(sql, data, function (err) {
+            const sqlNewId = `SELECT IFNULL(max(id), 0) + 1 FROM hero WHERE user_id = ${user_id}`;
+            db.get(sqlNewId, (err, row) => {
+                // get new ID for hero to be added
+                id = row["IFNULL(max(id), 0) + 1"];
                 if (err) console.log(err.message);
                 else {
+                    const data = [name, req.body.year, req.body.info]
+                    const sql = `
+                        INSERT INTO hero (id, name, year, info, user_id)
+                            VALUES ( ${id},
+                            ?,
+                            ?,
+                            ?,
+                            ${user_id});
+                    `;
+                    // insert into databse new hero object with new id
+                    db.run(sql, data, function (err) {
+                        if (err) console.log(err.message + "MEEEE" + id);
+                        else {
+                            // return a hero object for heroes array to add (front end)
+                            const hero = {
+                                id: id,
+                                name: name,
+                                year: req.body.year,
+                                info: req.body.info
+                            }
+                            if (hero != null) heroes.push(hero);
+                            res.send(hero);
+                        }
+                    });
                 }
             });
-
-            // return result back to be added into heroes array
-            // const hero = {
-            //     id: id,
-            //     name: name,
-            //     year: req.body.year,
-            //     info: req.body.info
-            // }
-            // if (hero != null) heroes.push(hero);
-            // res.send(hero);
         })
         .catch(err => {
             if (err) {
