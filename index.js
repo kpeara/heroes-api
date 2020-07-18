@@ -130,7 +130,6 @@ app.post("/api/heroes", (req, res) => {
                                 year: req.body.year,
                                 info: req.body.info
                             }
-                            if (hero != null) heroes.push(hero);
                             res.send(hero);
                         }
                     });
