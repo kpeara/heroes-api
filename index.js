@@ -7,7 +7,7 @@ const db = require("./dbconnect");
 const app = express();
 app.use(express.json());
 app.use(cors({ credentials: true, origin: true }));
-const port = 3000;
+const port = 3001;
 const user_id = 1;
 // NOTE: For testing purposes, the user will have a user id of 1
 // will change with addition of user auth
