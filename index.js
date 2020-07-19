@@ -123,7 +123,7 @@ app.post("/api/heroes", (req, res) => {
                     `;
                     // insert into databse new hero object with new id
                     db.run(sql, data, function (err) {
-                        if (err) console.log(err.message + "MEEEE" + id);
+                        if (err) console.log(err.message);
                         else {
                             // return a hero object for heroes array to add (front end)
                             const hero = {
