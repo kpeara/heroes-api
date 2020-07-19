@@ -54,8 +54,8 @@ app.get("/api/heroes/:id", (req, res) => {
         if (err) return err;
         else {
             const hero = row
-            if (!hero) return res.status(404).send("Invalid Request: Hero Does Not Exist");
-            res.send(hero);
+            if (!hero) res.status(400).send("Invalid Request: Hero Does Not Exist");
+            else res.send(hero);
         }
     });
 });
