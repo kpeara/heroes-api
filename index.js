@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 app.get("/api/heroes", (req, res) => {
     const sql = `SELECT id, name, year, info FROM hero WHERE user_id = ${user_id};`;
     db.all(sql, (err, rows) => {
-        if (err) console.log(err);
+        if (err) console.log(err.message);
         else {
             // if there is no error, copy the data to a temporary array for modification (a feature I might deprecate)
             modifiedHeroes = [...rows];
