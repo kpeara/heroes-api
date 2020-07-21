@@ -23,7 +23,10 @@ app.get("/", (req, res) => {
 app.get("/api/heroes", (req, res) => {
     const sql = `SELECT id, name, year, info FROM hero WHERE user_id = ${user_id};`;
     db.all(sql, (err, rows) => {
-        if (err) console.log(err.message);
+        if (err) {
+            console.log(err.message);
+            res.status(400).send(err.message);
+        }
         else {
             // if there is no error, copy the data to a temporary array for modification (a feature I might deprecate)
             modifiedHeroes = [...rows];
@@ -51,7 +54,10 @@ app.get("/api/heroes", (req, res) => {
 app.get("/api/heroes/:id", (req, res) => {
     const sql = `SELECT * FROM hero WHERE user_id = ${user_id} AND id = ${req.params.id};`;
     db.get(sql, (err, row) => {
-        if (err) return err;
+        if (err) {
+            console.log(err.message);
+            res.status(400).send(err.message);
+        }
         else {
             const hero = row
             if (!hero) res.status(400).send("Invalid Request: Hero Does Not Exist");
@@ -73,7 +79,10 @@ app.put("/api/heroes/:id", (req, res) => {
                                 info = ?
                             WHERE user_id = ${user_id} AND id = ${req.params.id}`;
             db.run(sql, data, function (err) {
-                if (err) console.log(err.message);
+                if (err) {
+                    console.log(err.message);
+                    res.status(400).send(err.message);
+                }
                 else {
                     res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
                 }
@@ -92,7 +101,10 @@ app.delete("/api/heroes/:id", (req, res) => {
     // // find hero
     const sql = `DELETE FROM hero WHERE user_id = ${user_id} AND id = ${req.params.id}`;
     db.run(sql, function (err) {
-        if (err) console.log(err.message);
+        if (err) {
+            console.log(err.message);
+            res.status(400).send(err.message);
+        }
         else {
             res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
         }
@@ -110,7 +122,10 @@ app.post("/api/heroes", (req, res) => {
             db.get(sqlNewId, (err, row) => {
                 // get new ID for hero to be added
                 id = row["IFNULL(max(id), 0) + 1"];
-                if (err) console.log(err.message);
+                if (err) {
+                    console.log(err.message);
+                    res.status(400).send(err.message);
+                }
                 else {
                     const data = [name, req.body.year, req.body.info]
                     const sql = `
