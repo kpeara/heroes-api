@@ -45,7 +45,7 @@ app.get("/api/heroes", (req, res) => {
             if (reverse === "true") {
                 modifiedHeroes.reverse();
             }
-            res.send(modifiedHeroes);
+            res.status(200).send(modifiedHeroes);
         }
     });
 });
@@ -61,7 +61,7 @@ app.get("/api/heroes/:id", (req, res) => {
         else {
             const hero = row
             if (!hero) res.status(400).send("Invalid Request: Hero Does Not Exist");
-            else res.send(hero);
+            else res.status(200).send(hero);
         }
     });
 });
@@ -84,7 +84,7 @@ app.put("/api/heroes/:id", (req, res) => {
                     res.status(400).send(err.message);
                 }
                 else {
-                    res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
+                    res.status(200).send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated (for testing)
                 }
             })
         })
@@ -106,7 +106,7 @@ app.delete("/api/heroes/:id", (req, res) => {
             res.status(400).send(err.message);
         }
         else {
-            res.send(`Row(s) Updated: ${this.changes}`); // returns number of rows updated
+            res.status(200).send(`Row(s) Updated: ${this.changes}`); // returns number of rows deleted
         }
     })
 });
@@ -150,7 +150,7 @@ app.post("/api/heroes", (req, res) => {
                                 year: req.body.year,
                                 info: req.body.info
                             }
-                            res.send(hero);
+                            res.status(200).send(hero);
                         }
                     });
                 }
