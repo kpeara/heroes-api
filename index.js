@@ -4,12 +4,13 @@ const cors = require("cors");
 const path = require("path");
 const db = require("./dbconnect");
 const jwt = require("jsonwebtoken");
+const jwt_decode = require("jwt-decode");
 
 const app = express();
 app.use(express.json());
 app.use(cors({ credentials: true, origin: true }));
 const port = 3001;
-const user_id = 1;
+let user_id;
 // NOTE: For testing purposes, the user will have a user id of 1
 // will change with addition of user auth
 
@@ -196,5 +197,6 @@ function authenticateToken(req, res, next) {
 }
 
 function decodeToken(token) {
-    console.log("token being decoded" + token);
+    const decoded = jwt_decode(token);
+    user_id = decoded.id;
 }
