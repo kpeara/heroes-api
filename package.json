@@ -15,7 +15,6 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
     "nodemon": "^2.0.4",
-    "sqlite3": "^5.0.0",
     "yup": "^0.29.1"
   }
 }

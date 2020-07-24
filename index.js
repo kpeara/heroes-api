@@ -3,7 +3,7 @@ const express = require("express");
 const yup = require("yup");
 const cors = require("cors");
 const path = require("path");
-const db = require("./dbconnect");
+const db = require("../heroes-db/dbconnect");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
 
