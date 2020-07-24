@@ -3,6 +3,7 @@ const yup = require("yup");
 const cors = require("cors");
 const path = require("path");
 const db = require("./dbconnect");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(express.json());
@@ -20,8 +21,7 @@ app.get("/", (req, res) => {
 });
 
 // Get heroes from database
-app.get("/api/heroes", (req, res) => {
-    console.log(req.headers["authorization"]);
+app.get("/api/heroes", authenticateToken, (req, res) => {
     const sql = `SELECT id, name, year, info FROM hero WHERE user_id = ${user_id};`;
     db.all(sql, (err, rows) => {
         if (err) {
@@ -179,4 +179,22 @@ function validate(hero) {
 // capitalize name string properly
 function capitalize(name) {
     return name.toLowerCase().replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+}
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1]; // Bearer token
+    if (token == null) return res.status(401).send("Authentication Error");
+
+    jwt.verify(token, "TEST", (err, user) => {
+        if (err) res.status(403).send(err.message);
+        else {
+            decodeToken(token);
+            next();
+        }
+    });
+}
+
+function decodeToken(token) {
+    console.log("token being decoded" + token);
 }
