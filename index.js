@@ -1,3 +1,4 @@
+require("dotenv").config({ path: "../.env" });
 const express = require("express");
 const yup = require("yup");
 const cors = require("cors");
@@ -187,7 +188,7 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(" ")[1]; // Bearer token
     if (token == null) return res.status(401).send("Authentication Error");
 
-    jwt.verify(token, "TEST", (err, user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
         if (err) res.status(403).send(err.message);
         else {
             decodeToken(token);
