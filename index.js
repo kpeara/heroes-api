@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
 
 // Get heroes from database
 app.get("/api/heroes", (req, res) => {
+    console.log(req.headers["authorization"]);
     const sql = `SELECT id, name, year, info FROM hero WHERE user_id = ${user_id};`;
     db.all(sql, (err, rows) => {
         if (err) {
