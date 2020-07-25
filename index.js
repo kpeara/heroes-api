@@ -18,8 +18,7 @@ let user_id;
 // === GET REQUESTS ===
 // Home Page
 app.get("/", (req, res) => {
-    // res.send("<h1>Heroes's API</h1><p>USE: http://localhost:3000/api/heroes<p>")
-    res.sendFile(path.join(__dirname + "/index.html"));
+    res.status(200).sendFile(path.join(__dirname + "/index.html"));
 });
 
 // Get heroes from database
@@ -93,7 +92,7 @@ app.put("/api/heroes/:id", (req, res) => {
         })
         .catch(err => {
             if (err) {
-                res.status(400).send(err.errors[0]);
+                res.status(400).send(err.message);
             }
         });
 });
@@ -161,7 +160,7 @@ app.post("/api/heroes", (req, res) => {
         })
         .catch(err => {
             if (err) {
-                res.status(400).send(err.errors[0]);
+                res.status(400).send(err.message);
             }
         });
 });
