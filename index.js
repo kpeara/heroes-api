@@ -189,7 +189,7 @@ function authenticateToken(req, res, next) {
     if (token == null) return res.status(401).send("Authentication Error");
 
     jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
-        if (err) res.status(403).send(err.message);
+        if (err) res.status(401).send(err.message);
         else {
             decodeToken(token);
             next();
